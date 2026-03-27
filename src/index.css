@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-virgil-black: #0a0a0a;
+  --color-virgil-white: #fafafa;
+  --color-virgil-orange: #ff6b35;
+  --color-virgil-yellow: #f7c948;
+  --color-virgil-blue: #3b82f6;
+  --color-virgil-gray: #71717a;
+}
+
+body {
+  margin: 0;
+  background: var(--color-virgil-black);
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* React Flow customizations */
+.react-flow__node {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.react-flow__edge-path {
+  stroke-width: 2;
+}
+
+/* Custom node styles */
+.node-input {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #3b82f6;
+}
+
+.node-process {
+  background: linear-gradient(135deg, #2d1b4e 0%, #1a1a2e 100%);
+  border: 2px solid #f7c948;
+}
+
+.node-output {
+  background: linear-gradient(135deg, #1e3a2f 0%, #1a1a2e 100%);
+  border: 2px solid #ff6b35;
+}
+
+/* Glow effects */
+.glow-blue {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 20px rgba(247, 201, 72, 0.3);
+}
+
+.glow-orange {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+
+/* Panel styles */
+.info-panel {
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid #333;
+  backdrop-filter: blur(10px);
+}
+
+/* Quotes styling */
+.virgil-quote {
+  font-style: italic;
+  color: #a1a1aa;
+  border-left: 3px solid #ff6b35;
+  padding-left: 1rem;
+}
+
+/* Animation for data flow */
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-slow {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+/* Typography */
+.font-mono {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
