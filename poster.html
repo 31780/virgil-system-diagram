@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Creative Pipeline - Virgil Abloh System Architecture</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: #0a0a0a;
+      color: #fafafa;
+      font-family: 'Inter', -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 60px;
+    }
+    
+    .poster {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .header h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+    
+    .header .tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: 18px;
+      color: #ff6b35;
+      margin-bottom: 8px;
+    }
+    
+    .header .subtitle {
+      font-size: 16px;
+      color: #71717a;
+    }
+    
+    /* Main diagram */
+    .diagram {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+    
+    .layer {
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    
+    .layer-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .layer-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .layer-input .layer-icon { background: rgba(59, 130, 246, 0.2); }
+    .layer-process .layer-icon { background: rgba(247, 201, 72, 0.2); }
+    .layer-output .layer-icon { background: rgba(255, 107, 53, 0.2); }
+    
+    .layer-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    
+    .layer-input .layer-title { color: #3b82f6; }
+    .layer-process .layer-title { color: #f7c948; }
+    .layer-output .layer-title { color: #ff6b35; }
+    
+    /* Nodes */
+    .node {
+      background: rgba(0,0,0,0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-left: 3px solid;
+    }
+    
+    .layer-input .node { border-color: #3b82f6; }
+    .layer-process .node { border-color: #f7c948; }
+    .layer-output .node { border-color: #ff6b35; }
+    
+    .node-name {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .node-desc {
+      font-size: 13px;
+      color: #a1a1aa;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    
+    .node-code {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      background: rgba(0,0,0,0.5);
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #22c55e;
+      margin-bottom: 12px;
+    }
+    
+    .node-deps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .dep {
+      font-size: 10px;
+      background: rgba(255,255,255,0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: #d4d4d8;
+    }
+    
+    /* Quote section */
+    .quote-section {
+      background: linear-gradient(135deg, rgba(255,107,53,0.1) 0%, rgba(247,201,72,0.05) 100%);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 60px;
+      border: 1px solid rgba(255,107,53,0.2);
+    }
+    
+    .quote-section blockquote {
+      font-size: 28px;
+      font-weight: 300;
+      font-style: italic;
+      margin-bottom: 16px;
+      color: #fafafa;
+    }
+    
+    .quote-section cite {
+      font-size: 14px;
+      color: #71717a;
+    }
+    
+    /* System layer */
+    .system-section {
+      margin-bottom: 60px;
+    }
+    
+    .system-section h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #71717a;
+      margin-bottom: 24px;
+    }
+    
+    .system-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    
+    .system-node {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    
+    .system-node h3 {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #fafafa;
+    }
+    
+    .system-node p {
+      font-size: 12px;
+      color: #71717a;
+      line-height: 1.5;
+    }
+    
+    /* Footer */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .footer-left {
+      font-size: 12px;
+      color: #52525b;
+    }
+    
+    .footer-right {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: #ff6b35;
+    }
+    
+    /* Flow arrows */
+    .flow-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    
+    .flow-arrow {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, #3b82f6, #f7c948, #ff6b35);
+      position: relative;
+    }
+    
+    .flow-arrow::after {
+      content: '→';
+      position: absolute;
+      right: -20px;
+      top: -10px;
+      color: #ff6b35;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="poster">
+    <header class="header">
+      <div class="tagline">"Creativity is a distributed system"</div>
+      <h1>The Creative Pipeline</h1>
+      <div class="subtitle">Virgil Abloh's methodology as system architecture</div>
+    </header>
+
+    <div class="diagram">
+      <!-- INPUT LAYER -->
+      <div class="layer layer-input">
+        <div class="layer-header">
+          <div class="layer-icon">📥</div>
+          <div class="layer-title">Input Layer</div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Archive</div>
+          <div class="node-desc">Historical fashion, art movements, design archives</div>
+          <div class="node-deps">
+            <span class="dep">Margiela</span>
+            <span class="dep">Duchamp</span>
+            <span class="dep">Bauhaus</span>
+            <span class="dep">Le Corbusier</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Street Culture</div>
+          <div class="node-desc">Skateboarding, graffiti, DIY scenes</div>
+          <div class="node-deps">
+            <span class="dep">Supreme</span>
+            <span class="dep">Stüssy</span>
+            <span class="dep">Futura</span>
+            <span class="dep">KAWS</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Music</div>
+          <div class="node-desc">Hip-hop, house, electronic — sonic DNA</div>
+          <div class="node-deps">
+            <span class="dep">Kanye</span>
+            <span class="dep">Chicago House</span>
+            <span class="dep">A$AP Mob</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Architecture</div>
+          <div class="node-desc">Structural thinking, spatial design, IIT training</div>
+          <div class="node-deps">
+            <span class="dep">Mies van der Rohe</span>
+            <span class="dep">Rem Koolhaas</span>
+            <span class="dep">Zaha Hadid</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Youth Culture</div>
+          <div class="node-desc">The 17-year-old consumer, emerging trends</div>
+          <div class="node-deps">
+            <span class="dep">TikTok</span>
+            <span class="dep">Gaming</span>
+            <span class="dep">Memes</span>
+            <span class="dep">Discord</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROCESS LAYER -->
+      <div class="layer layer-process">
+        <div class="layer-header">
+          <div class="layer-icon">⚙️</div>
+          <div class="layer-title">Process Layer</div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">The 3% Rule</div>
+          <div class="node-desc">Minimal intervention. Maximum impact.</div>
+          <div class="node-code">transform(input) → input * 0.97 + signature * 0.03</div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">"Everything in Quotes"</div>
+          <div class="node-desc">Explicit referencing. Nothing is original, everything is imported.</div>
+          <div class="node-code">import { reference } from "culture"</div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Sampling & Remix</div>
+          <div class="node-desc">DJ methodology applied to design. Layer, loop, transform.</div>
+          <div class="node-code">sample(a) + sample(b) → new_context</div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Tourist Mode</div>
+          <div class="node-desc">Outsider perspective. Fresh eyes on established fields.</div>
+          <div class="node-code">perspective = outsider ? fresh : stale</div>
+        </div>
+      </div>
+
+      <!-- OUTPUT LAYER -->
+      <div class="layer layer-output">
+        <div class="layer-header">
+          <div class="layer-icon">📤</div>
+          <div class="layer-title">Output Layer</div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Garments</div>
+          <div class="node-desc">Off-White, Louis Vuitton, Nike collaborations</div>
+          <div class="node-deps">
+            <span class="dep">Industrial Belt</span>
+            <span class="dep">The Ten</span>
+            <span class="dep">LV SS19</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Shows & Installations</div>
+          <div class="node-desc">Runway as performance, space as medium</div>
+          <div class="node-deps">
+            <span class="dep">LV SS19 Rainbow</span>
+            <span class="dep">MCA Chicago</span>
+            <span class="dep">Figures of Speech</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Objects & Furniture</div>
+          <div class="node-desc">IKEA, Vitra, gallery pieces</div>
+          <div class="node-deps">
+            <span class="dep">MARKERAD</span>
+            <span class="dep">Efflorescence</span>
+            <span class="dep">Alaska Chair</span>
+          </div>
+        </div>
+        
+        <div class="node">
+          <div class="node-name">Discourse</div>
+          <div class="node-desc">Lectures, interviews, the conversation itself</div>
+          <div class="node-deps">
+            <span class="dep">Harvard GSD</span>
+            <span class="dep">Instagram</span>
+            <span class="dep">Free Game</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quote-section">
+      <blockquote>"If you change 3% of something, it becomes something new."</blockquote>
+      <cite>— Virgil Abloh</cite>
+    </div>
+
+    <div class="system-section">
+      <h2>System Infrastructure</h2>
+      <div class="system-grid">
+        <div class="system-node">
+          <h3>Cultural Load Balancer</h3>
+          <p>Distributes influence across multiple cultural streams. Never be just one thing.</p>
+        </div>
+        <div class="system-node">
+          <h3>Reference Cache</h3>
+          <p>Hot: recent trends. Warm: 5-20 years. Cold: deep archive pulls (most valuable).</p>
+        </div>
+        <div class="system-node">
+          <h3>SLO: Serve the Youth</h3>
+          <p>Primary objective. All metrics trace back to: "Is this serving the 17-year-old?"</p>
+        </div>
+        <div class="system-node">
+          <h3>Observability</h3>
+          <p>Social engagement, resale value, cultural citation, influence latency.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-left">
+        Submitted to Virgil Abloh™ Archive<br>
+        Interactive version: 31780.github.io/virgil-system-diagram
+      </div>
+      <div class="footer-right">
+        "Free game."
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

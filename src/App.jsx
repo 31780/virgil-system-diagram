@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import {
   ReactFlow,
   Background,
@@ -13,7 +13,8 @@ import CustomNode from './components/CustomNode';
 import InfoPanel from './components/InfoPanel';
 import Legend from './components/Legend';
 import Header from './components/Header';
-import { initialNodes, initialEdges } from './data/nodes';
+import MobileView from './components/MobileView';
+import { initialNodes, initialEdges, nodeData } from './data/nodes';
 
 const nodeTypes = {
   customNode: CustomNode,
@@ -23,6 +24,16 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedNode, setSelectedNode] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const onNodeClick = useCallback((event, node) => {
     setSelectedNode(node);
@@ -32,6 +43,12 @@ export default function App() {
     setSelectedNode(null);
   }, []);
 
+  // Mobile view
+  if (isMobile) {
+    return <MobileView nodeData={nodeData} />;
+  }
+
+  // Desktop view
   return (
     <div className="w-screen h-screen bg-virgil-black">
       <ReactFlow
